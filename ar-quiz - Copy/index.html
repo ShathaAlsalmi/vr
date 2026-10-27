@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>رحلة حول عالم Google</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&family=Readex+Pro:wght@600;800&display=swap" rel="stylesheet">
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+<style>
+:root{--blue:#4285F4;--red:#EA4335;--yellow:#FBBC04;--green:#34A853;--ink:#0b0b0b;--c:#4285F4;--cs:#E8F0FE}
+*{box-sizing:border-box;margin:0}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:#fff;color:var(--ink);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;position:relative}
+body::before{content:"";position:fixed;top:-120px;left:-120px;width:340px;height:340px;border-radius:50%;background:var(--cs);transition:.4s;z-index:0}
+body::after{content:"";position:fixed;bottom:60px;right:-140px;width:300px;height:300px;border-radius:50%;background:var(--cs);opacity:.6;transition:.4s;z-index:0}
+h1,h2,.tag,button{font-family:'Readex Pro','IBM Plex Sans Arabic',sans-serif}
+header{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:14px 18px}
+#logo{display:flex;align-items:center;gap:8px;direction:ltr;font-size:13px;line-height:1.1}
+#logo img{height:38px}
+#logo small{color:var(--blue);display:block;font-size:10px}
+.prog{display:flex;gap:4px;flex:1;max-width:210px;margin-inline-start:14px}
+.prog i{flex:1;height:7px;border-radius:4px;background:#e4e6ea;transition:.3s}
+main{position:relative;z-index:1;flex:1;width:100%;max-width:560px;margin:0 auto;padding:6px 18px 24px}
+.tag{display:inline-block;background:var(--c);color:#fff;font-size:13px;padding:5px 14px;border-radius:20px;margin-bottom:10px}
+.bar{width:64px;height:6px;background:var(--yellow);border-radius:3px;margin:8px 0 14px}
+h1{font-size:34px;font-weight:800;line-height:1.3}
+h2{font-size:20px;font-weight:800;line-height:1.5;margin:16px 0 10px}
+.lead{color:#555;line-height:1.8;margin:6px 0 18px}
+.stage{display:none}.stage.on{display:block;animation:up .35s}
+@keyframes up{from{opacity:0;transform:translateY(12px)}}
+.mv{position:relative;border-radius:24px;background:#fff;border:2px solid var(--cs);box-shadow:0 8px 24px #0001;overflow:hidden}
+model-viewer{width:100%;height:290px;--poster-color:transparent;background:linear-gradient(160deg,var(--cs),#fff)}
+.ar{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;border:0;padding:11px 20px;border-radius:30px;font-size:15px;white-space:nowrap}
+.demo{font-size:12px;color:#8a6d00;background:#FEF7E0;padding:6px 12px;display:none}
+.ink{display:flex;gap:12px;align-items:flex-start;background:var(--ink);color:#fff;border-radius:22px;padding:16px 18px;margin-top:14px;line-height:1.8}
+.ink svg{flex:none;width:34px;height:34px}
+.opts{display:grid;gap:10px}
+.opt{background:#fff;border:2px solid #e4e6ea;border-radius:18px;padding:14px 16px;font-size:16px;text-align:start;cursor:pointer;transition:.15s;color:var(--ink)}
+.opt:active{transform:scale(.98)}
+.opt.ok{background:#E6F4EA;border-color:var(--green)}
+.opt.no{background:#FCE8E6;border-color:var(--red)}
+.fb{display:none;border-radius:18px;padding:12px 16px;margin-top:12px;line-height:1.8;background:var(--cs)}
+.btn{display:block;width:100%;margin-top:14px;background:var(--c);color:#fff;border:0;border-radius:30px;padding:15px;font-size:17px;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.score{font-family:'Readex Pro';font-size:64px;font-weight:800;color:var(--c)}
+footer{position:relative;z-index:1}
+.ft{display:flex;justify-content:space-between;align-items:center;padding:8px 18px 12px}
+.dots i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-inline-end:6px}
+.ft b{font-family:'Readex Pro';font-size:13px}
+.fbar{height:9px;background:var(--c);transition:.4s}
+</style>
+</head>
+<body>
+<header>
+  <div id="logo"><img src="logo.png" alt="GDG" onerror="this.outerHTML='<svg width=44 height=38 viewBox=&quot;0 0 44 38&quot;><path d=&quot;M14 4 3 15l11 11&quot; fill=none stroke=#4285F4 stroke-width=7 stroke-linecap=round stroke-linejoin=round /><path d=&quot;M30 12l11 11-11 11&quot; fill=none stroke=#34A853 stroke-width=7 stroke-linecap=round stroke-linejoin=round /></svg>'"><span>Google Developer Group<small>University of Taif</small></span></div>
+  <div class="prog" id="prog"></div>
+</header>
+<main id="app"></main>
+<div id="cam" style="display:none;position:fixed;inset:0;z-index:50;background:#0b0b0b;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px">
+<canvas id="cv" width="720" height="960" style="max-width:100%;max-height:76vh;border-radius:18px" onclick="burst()"></canvas>
+<div id="cmsg" style="color:#fff;font-size:14px;text-align:center"></div>
+<div style="display:flex;gap:10px;width:100%;max-width:420px"><button class="btn" style="margin:0" onclick="snap()">📸 احفظ وشارك</button><button class="btn ghost" style="margin:0" onclick="closeCam()">رجوع</button></div></div>
+<footer><div class="ft"><span class="dots"><i style="background:#EA4335"></i><i style="background:#FBBC04"></i><i style="background:#34A853"></i></span><b>#خلّك_قوقلي</b></div><div class="fbar"></div></footer>
+
+<script>
+// ===== إعدادات سهلة التعديل =====
+const FILTER_URL = ""; // ضعي هنا رابط فلتر الوجه (سناب/إنستغرام) لما يجهز
+const DEMO = {glb:"https://modelviewer.dev/shared-assets/models/Astronaut.glb", usdz:"https://modelviewer.dev/shared-assets/models/Astronaut.usdz"};
+const COLORS = [["#4285F4","#E8F0FE"],["#EA4335","#FCE8E6"],["#FBBC04","#FEF7E0"],["#34A853","#E6F4EA"],["#4285F4","#E8F0FE"],["#EA4335","#FCE8E6"],["#34A853","#E6F4EA"]];
+const STAGES = [
+ {name:"Google Cardboard", m:"cardboard",
+  q:"تحط جوالك داخل Cardboard، فتشوف مدينة ثلاثية الأبعاد تحيط بك وتختفي غرفتك. هل هذي التقنية VR أم AR؟", o:["VR واقع افتراضي","AR واقع معزز"], a:0, why:"صح! في VR تنعزل عن الواقع وتدخل عالمًا افتراضيًا."},
+ {name:"Maps Live View", m:"pin",
+  q:"وش اللي يخلي Maps يعرف مكانك واتجاهك بدقة ويرسم الأسهم في مكانها؟", o:["مقارنة ما تصوّره الكاميرا بصور الشوارع (Street View)","عدّاد الخطوات فقط","إشارة الراديو"], a:0, why:"صح! Live View يقارن صورة كاميرتك بصور Street View ليحدد موقعك واتجاهك."},
+ {name:"Google Nest", m:"speaker",
+  q:"كلمة Nest تعني «عش». وش المجال اللي تشتغل فيه منتجات Google Nest؟", o:["المنزل الذكي","الألعاب","الطيران"], a:0, why:"صح! Nest أجهزة ذكية للبيت تتحكم فيها بالصوت."},
+ {name:"Google Lens", m:"lens",
+  q:"تصوّر ورقة بلغة ثانية وتبغى تنسخ نصها. وش الميزة اللي تعتمد عليها Lens؟", o:["التعرّف على الحروف في الصورة وتحويلها لنص","حفظ الصور في Drive","تعديل ألوان الصورة"], a:0, why:"صح! Lens يقرأ الحروف في الصورة ويحوّلها لنص تقدر تنسخه."},
+ {name:"ARCore", m:"phone",
+  q:"على وش تعتمد ARCore لتثبّت المجسم على الطاولة وأنت تتحرك حوله؟", o:["تتبّع حركة الجوال وفهم الأسطح من الكاميرا","الإنترنت فقط","البلوتوث"], a:0, why:"صح! ARCore تفهم حركة الجوال والأسطح حواليه."},
+ {name:"Google Earth", m:"globe",
+  q:"صح أم خطأ: Google Earth يعرض الأرض فقط، ولا يمكنك استكشاف القمر أو المريخ.", o:["صح","خطأ"], a:1, why:"ممتاز! Google Earth يتيح استكشاف القمر والمريخ كمان."},
+ {name:"السؤال الختامي", m:"laptop",
+  q:"هذي اللعبة تشتغل من المتصفح بدون تحميل تطبيق. بأي لغة تُبنى صفحات الويب التفاعلية؟", o:["JavaScript وHTML","Excel","Photoshop"], a:0, why:"ممتاز! ومن هنا تبدأ رحلة المطوّر. نشوفك في النادي!"}
+];
+const RANKS=[[7,"خبير تقنيات Google","Google Tech Expert"],[5,"مطوّر معتمد في النادي","Google Club Developer"],[0,"مستكشف مبتكر","Innovative Explorer"]];
+function rankOf(s){const r=RANKS.find(x=>s>=x[0]);return {ar:r[1],en:r[2]}}
+const STAR='<svg viewBox="0 0 40 40"><path d="M20 20C20 8 14 2 8 4c-4 1-4 8 2 12 4 3 10 4 10 4Zm0 0c12 0 18-6 16-12-1-4-8-4-12 2-3 4-4 10-4 10Zm0 0c0 12 6 18 12 16 4-1 4-8-2-12-4-3-10-4-10-4Zm0 0C8 20 2 26 4 32c1 4 8 4 12-2 3-4 4-10 4-10Z" fill="var(--c)"/></svg>';
+const HINTS=["💡 تلميح: هل تقدر تشوف غرفتك وأنت داخل النظارة؟","💡 تلميح: Google صوّرت الشوارع من سنين، وتقارنها بصورة كاميرتك.","💡 تلميح: العش هو بيت الطائر 🪺","💡 تلميح: العدسة تقرأ الحروف المكتوبة في الصورة.","💡 تلميح: الجوال لازم يعرف وين هو ووين الطاولة.","💡 تلميح: Earth ما يقف عند الأرض، فكّر في الفضاء 🚀","💡 تلميح: المطوّر يكتب كودًا يفهمه المتصفح، وهذي الصفحة نفسها تتحرك وتتفاعل."];
+function arLink(s){try{const b=new URL('banner.html?h='+encodeURIComponent(HINTS[STAGES.indexOf(s)]||''),location.href).href;return `models/${s.m}.usdz#custom=${encodeURIComponent(b)}&customHeight=small&allowsContentScaling=1`}catch(e){return `models/${s.m}.usdz`}}
+const N=STAGES.length; let i=0, score=0;
+const app=document.getElementById('app'), prog=document.getElementById('prog');
+prog.innerHTML=STAGES.map(()=>'<i></i>').join('');
+function setColor(k){const c=COLORS[Math.min(k,N-1)];const r=document.documentElement.style;r.setProperty('--c',c[0]);r.setProperty('--cs',c[1])}
+function bars(done){[...prog.children].forEach((b,k)=>b.style.background=k<done?COLORS[k][0]:'#e4e6ea')}
+function start(){i=0;score=0;setColor(0);bars(0);
+ app.innerHTML=`<div class="stage on"><span class="tag">GDG on Campus · جامعة الطائف</span><h1>رحلة حول<br>عالم Google</h1><div class="bar"></div>
+ <p class="lead">${N} محطات. في كل محطة تشوف مجسمًا بكاميرا جوالك، وتتعلم عن منتج من Google يستخدم الواقع المعزز أو الافتراضي، ثم تجاوب وتجمع نقاطك.</p>
+ <div class="ink">${STAR}<div>في النهاية تاخذ لقبك وتصوّر نفسك بفلتر النادي.</div></div>
+ <button class="btn" onclick="show()">ابدأ الرحلة</button></div>`}
+function show(){const s=STAGES[i];setColor(i);bars(i);
+ app.innerHTML=`<div class="stage on"><span class="tag">المحطة ${i+1} من ${N} · ${s.name}</span>
+ <div class="mv"><model-viewer id="mv" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate shadow-intensity="1" alt="${s.name}"><button slot="ar-button" class="ar">📱 شاهده في مكانك</button></model-viewer><div class="demo" id="demo">مجسم تجريبي: مجسم المحطة لم يُضف بعد</div></div>
+ <h2>${s.q}</h2><div class="opts">${s.o.map((t,k)=>`<button class="opt" onclick="pick(${k})">${t}</button>`).join('')}</div>
+ <div class="fb" id="fb"></div><button class="btn" id="nx" style="display:none" onclick="next()">${i==N-1?'شاهد نتيجتك':'المحطة التالية'}</button></div>`;
+ const mv=document.getElementById('mv');
+ mv.addEventListener('error',async()=>{let ok=false;try{ok=(await fetch(`models/${s.m}.usdz`,{method:'HEAD'})).ok}catch(e){}
+  if(ok){mv.outerHTML=`<div style="padding:26px 18px;text-align:center;background:linear-gradient(160deg,var(--cs),#fff)"><div style="font-size:64px">🧊</div><p style="margin:8px 0 14px;font-weight:600">${s.name}</p><a rel="ar" href="${arLink(s)}" style="text-decoration:none;position:relative;display:inline-block"><img alt="" width="1" height="1" style="position:absolute;opacity:0" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><span class="ar" style="position:static;transform:none;display:inline-block">📱 شاهده في مكانك</span></a><p style="font-size:13px;color:#5f6368;margin:12px 0 0">💡 بيظهر لك تلميح أعلى الكاميرا يساعدك في الجواب</p></div>`}
+  else{mv.src=DEMO.glb;mv.setAttribute('ios-src',DEMO.usdz);document.getElementById('demo').style.display='block'}},{once:true});
+ mv.setAttribute('ios-src',`models/${s.m}.usdz`);mv.src=`models/${s.m}.glb`;window.scrollTo(0,0)}
+function pick(k){const s=STAGES[i];const b=[...document.querySelectorAll('.opt')];if(b[0].disabled)return;
+ b.forEach(x=>x.disabled=true);b[s.a].classList.add('ok');const f=document.getElementById('fb');
+ if(k==s.a){score++;f.innerHTML='🎉 '+s.why+' (+1 نقطة)'}else{b[k].classList.add('no');f.innerHTML='ما ضبطت هالمرة. الصحيح: <b>'+s.o[s.a]+'</b>. '+s.why.replace(/^[^!]*! ?/,'')}
+ f.style.display='block';document.getElementById('nx').style.display='block'}
+function next(){i++;i<N?show():end()}
+function end(){bars(N);setColor(N-1);const R=rankOf(score),t=R.ar;
+ app.innerHTML=`<div class="stage on" style="text-align:center"><span class="tag">انتهت الرحلة</span><div class="score">${score}/${N}</div><h1 style="font-size:28px">لقبك:<br>${t}</h1><p class="lead" style="margin:0">${R.en}</p><div class="bar" style="margin-inline:auto"></div>
+ <div class="ink" style="text-align:start">${STAR}<div>الخطوة الأخيرة: صوّر نفسك بفلتر النادي، ثم أرِ فريق الركن شاشتك لتستلم جائزتك.</div></div>
+ <button class="btn" onclick="openFilter()">🎭 صوّر نفسك بالفلتر</button>
+ <button class="btn ghost" onclick="start()">زائر جديد</button></div>`}
+// ===== فلتر الوجه =====
+let stream,vid,raf,detector,face=null,rank,parts=[],camOn=false,lastDet=0;
+const GC=['#4285F4','#EA4335','#FBBC04','#34A853'], logoImg=new Image();logoImg.src='logo.png';
+async function initDet(){try{const b='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';const m=await import(b+'/vision_bundle.mjs');const f=await m.FilesetResolver.forVisionTasks(b+'/wasm');
+ detector=await m.FaceDetector.createFromOptions(f,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite'},runningMode:'VIDEO'})}catch(e){detector=null}}
+async function openFilter(){rank=rankOf(score);const msg=document.getElementById('cmsg');
+ document.getElementById('cam').style.display='flex';msg.textContent='جاري تشغيل الكاميرا...';
+ try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false})}
+ catch(e){msg.textContent='ما انفتحت الكاميرا. اسمح للمتصفح باستخدامها (وافتح الرابط من Safari أو Chrome) ثم أعد المحاولة.';return}
+ vid=document.createElement('video');vid.playsInline=true;vid.muted=true;vid.srcObject=stream;await vid.play();
+ camOn=true;face=null;msg.textContent='وجّه وجهك للكاميرا 😄 والمس الشاشة لقصاصات إضافية';initDet();burst();loop()}
+function closeCam(){camOn=false;cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());document.getElementById('cam').style.display='none'}
+function burst(){for(let k=0;k<150;k++)parts.push({x:Math.random()*720,y:-20-Math.random()*300,vx:(Math.random()-.5)*5,vy:3+Math.random()*6,r:6+Math.random()*9,c:GC[k%4],a:Math.random()*6,va:(Math.random()-.5)*.4})}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function brackets(c,x,y,w,h){const L=70;c.lineWidth=13;c.lineCap='round';c.lineJoin='round';
+ [[x,y,1,1,0],[x+w,y,-1,1,1],[x+w,y+h,-1,-1,2],[x,y+h,1,-1,3]].forEach(([px,py,dx,dy,k])=>{c.strokeStyle=GC[k];c.beginPath();c.moveTo(px+dx*L,py);c.lineTo(px,py);c.lineTo(px,py+dy*L);c.stroke()})}
+function badge(c,cx,cy){c.save();const h=170;c.font='800 40px "Readex Pro",sans-serif';const w=Math.max(c.measureText(rank.ar).width+80,380);
+ const x=Math.min(Math.max(cx-w/2,24),720-24-w),y=cy-h/2;
+ c.shadowColor='#FBBC04';c.shadowBlur=32+14*Math.sin(performance.now()/220);rr(c,x,y,w,h,40);c.fillStyle='#fff';c.fill();c.shadowBlur=0;
+ const g=c.createLinearGradient(x,0,x+w,0);GC.forEach((k,i)=>g.addColorStop(i/3,k));c.lineWidth=7;c.strokeStyle=g;c.stroke();
+ c.textAlign='center';const mx=x+w/2;
+ if(logoImg.complete&&logoImg.naturalWidth){const lh=44,lw=logoImg.naturalWidth/logoImg.naturalHeight*lh;c.drawImage(logoImg,mx-Math.min(lw,w-40)/2,y+12,Math.min(lw,w-40),lh)}
+ else{c.font='600 22px "Readex Pro",sans-serif';c.fillStyle='#5f6368';c.fillText('Google Developer Group · Taif',mx,y+42)}
+ c.direction='rtl';c.font='800 40px "Readex Pro",sans-serif';c.fillStyle='#0b0b0b';c.fillText(rank.ar,mx,y+108);
+ c.direction='ltr';c.font='600 22px "Readex Pro",sans-serif';c.fillStyle='#4285F4';c.fillText(rank.en,mx,y+146);c.restore()}
+function loop(){if(!camOn)return;raf=requestAnimationFrame(loop);const cv=document.getElementById('cv'),c=cv.getContext('2d'),W=720,H=960,vw=vid.videoWidth,vh=vid.videoHeight;if(!vw)return;
+ const s=Math.max(W/vw,H/vh),ox=(W-vw*s)/2,oy=(H-vh*s)/2;
+ c.save();c.translate(W,0);c.scale(-1,1);c.drawImage(vid,ox,oy,vw*s,vh*s);c.restore();
+ const now=performance.now();
+ if(detector&&now-lastDet>70){lastDet=now;try{const r=detector.detectForVideo(vid,now),d=r.detections[0],b=d&&d.boundingBox;
+  if(b){const t={x:W-(ox+(b.originX+b.width/2)*s),y:oy+(b.originY+b.height/2)*s,w:b.width*s,h:b.height*s};
+   face=face?{x:face.x+(t.x-face.x)*.4,y:face.y+(t.y-face.y)*.4,w:face.w+(t.w-face.w)*.4,h:face.h+(t.h-face.h)*.4}:t}else face=null}catch(e){}}
+ const f=face||{x:W/2,y:H*.5,w:300,h:380},fw=f.w*1.5,fh=f.h*1.6;
+ brackets(c,f.x-fw/2,f.y-fh/2,fw,fh);
+ badge(c,f.x,Math.max(f.y-fh/2-110,120));
+ c.fillStyle=GC[0];c.fillRect(0,0,W,16);c.fillStyle=GC[1];c.fillRect(W-16,0,16,H);c.fillStyle=GC[2];c.fillRect(0,H-16,W,16);c.fillStyle=GC[3];c.fillRect(0,0,16,H);
+ c.save();c.font='800 30px "Readex Pro",sans-serif';c.textAlign='center';c.direction='rtl';const tw=c.measureText('#خلّك_قوقلي').width+50;rr(c,W/2-tw/2,H-96,tw,56,28);c.fillStyle='#0b0b0b';c.fill();c.fillStyle='#FBBC04';c.fillText('#خلّك_قوقلي',W/2,H-57);c.restore();
+ parts=parts.filter(p=>p.y<H+30);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=p.va;c.save();c.translate(p.x,p.y);c.rotate(p.a);c.fillStyle=p.c;c.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);c.restore()})}
+function snap(){document.getElementById('cv').toBlob(async b=>{const f=new File([b],'gdg-taif.png',{type:'image/png'}),txt='حصلت على رتبة «'+rank.ar+'» في رحلة حول عالم Google 🎉 #خلّك_قوقلي';
+ if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],text:txt});return}catch(e){if(e.name==='AbortError')return}}
+ const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='gdg-taif.png';a.click();document.getElementById('cmsg').textContent='تم حفظ الصورة. شاركها مع الوسم #خلّك_قوقلي'},'image/png')}
+start();
+</script>
+</body>
+</html>
